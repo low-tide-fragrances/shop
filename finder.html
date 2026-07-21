@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Your Scent | Low Tide Fragrances</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .quiz-container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 40px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0dbd5;
+            border-radius: 10px;
+            margin-bottom: 40px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #0087be, #ffffff);
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+
+        .question-container {
+            animation: slideIn 0.6s ease-out;
+            min-height: 350px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .question-number {
+            font-size: 0.9rem;
+            color: #0087be;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .question-title {
+            font-size: 2rem;
+            color: #000000;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .question-subtitle {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .option-btn {
+            padding: 16px;
+            border: 2px solid #e0dbd5;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .option-btn:hover {
+            border-color: #0087be;
+            background: #f0f7ff;
+            transform: translateX(5px);
+        }
+
+        .option-btn.selected {
+            border-color: #0087be;
+            background: linear-gradient(135deg, rgba(0, 135, 190, 0.1), rgba(255, 255, 255, 0.1));
+            font-weight: 600;
+        }
+
+        .option-icon {
+            font-size: 1.8rem;
+            min-width: 35px;
+            text-align: center;
+        }
+
+        .option-content {
+            flex: 1;
+        }
+
+        .option-label {
+            font-weight: 600;
+            color: #000000;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .option-description {
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .buttons-container {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        .btn-secondary {
+            flex: 1;
+            padding: 12px 20px;
+            border: 2px solid #e0dbd5;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            border-color: #0087be;
+            background: #f0f7ff;
+        }
+
+        .btn-primary-custom {
+            flex: 1;
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #0087be, #ffffff);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #001a33;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 30px rgba(0, 135, 190, 0.4);
+        }
+
+        .btn-primary-custom:hover:not(:disabled) {
+            box-shadow: 0 0 50px rgba(0, 135, 190, 0.6);
+            transform: translateY(-2px);
+        }
+
+        .btn-primary-custom:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .results-container {
+            animation: slideIn 0.6s ease-out;
+        }
+
+        .results-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .results-header h2 {
+            color: #000000;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .results-header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .result-card {
+            background: white;
+            border: 2px solid #e0dbd5;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            animation: slideIn 0.6s ease-out;
+        }
+
+        .result-card:hover {
+            border-color: #0087be;
+            box-shadow: 0 10px 40px rgba(0, 135, 190, 0.2);
+            transform: translateY(-5px);
+        }
+
+        .result-image {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+        }
+
+        .result-content {
+            padding: 20px;
+        }
+
+        .result-name {
+            font-size: 1.3rem;
+            color: #000000;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .result-match {
+            background: linear-gradient(135deg, #0087be, #ffffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .result-description {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+
+        .result-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #0087be, #ffffff);
+            color: #001a33;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .match-percentage {
+            font-size: 1rem;
+            color: #0087be;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .btn-view {
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(135deg, #0087be, #ffffff);
+            border: none;
+            border-radius: 6px;
+            color: #001a33;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(0, 135, 190, 0.3);
+            font-size: 0.9rem;
+        }
+
+        .btn-view:hover {
+            box-shadow: 0 0 40px rgba(0, 135, 190, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .restart-btn {
+            display: block;
+            margin: 40px auto 0;
+            padding: 12px 40px;
+            background: white;
+            border: 2px solid #e0dbd5;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .restart-btn:hover {
+            border-color: #0087be;
+            background: #f0f7ff;
+        }
+
+        @media (max-width: 768px) {
+            .quiz-container {
+                padding: 20px;
+            }
+
+            .question-title {
+                font-size: 1.5rem;
+            }
+
+            .buttons-container {
+                flex-direction: column;
+            }
+
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-content">
+                <div class="logo">
+                    <a href="index.html"><img src="images/logo.png" alt="Low Tide Fragrances Logo" class="logo-image" /></a>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="products.html">Fragrances</a></li>
+                    <li><a href="finder.html" class="active">Find Your Scent</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+                <button class="menu-toggle"><span></span><span></span><span></span></button>
+            </div>
+        </div>
+    </nav>
+
+    <section style="background: linear-gradient(135deg, #faf7f2 0%, #f5f1ed 100%); padding: 60px 0; text-align: center; margin-bottom: 60px;">
+        <div class="container">
+            <h1 style="color: #000000; margin-bottom: 20px;">Find Your Perfect Scent</h1>
+            <p style="color: #000000;">Discover which Low Tide fragrance matches your personality in 6 quick questions</p>
+        </div>
+    </section>
+
+    <section>
+        <div class="container">
+            <div class="quiz-container">
+                <div id="quiz-form">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress"></div>
+                    </div>
+
+                    <div class="question-container" id="question-container">
+                        <!-- Questions will be inserted here -->
+                    </div>
+
+                    <div class="buttons-container" id="buttons-container">
+                        <button type="button" class="btn-secondary" id="back-btn" style="display: none;" onclick="previousQuestion()">← Back</button>
+                        <button type="button" class="btn-primary-custom" id="next-btn" onclick="nextQuestion()" disabled>Next →</button>
+                    </div>
+                </div>
+
+                <div id="results-section" style="display: none;">
+                    <!-- Results will be inserted here -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Low Tide Fragrances</h4>
+                    <p>Bold scents inspired by the coast.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Shop</h4>
+                    <ul>
+                        <li><a href="products.html">All Fragrances</a></li>
+                        <li><a href="finder.html">Find Your Scent</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="safety.html">Safety Info</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Low Tide Fragrances. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const questions = [
+            {
+                id: 'vibe',
+                title: 'What\'s your vibe?',
+                subtitle: 'Pick the energy that resonates with you',
+                options: [
+                    { id: 'adventurous', icon: '🧭', label: 'Adventurous', description: 'Bold, daring, always exploring', trait: 'adventurous' },
+                    { id: 'chill', icon: '😎', label: 'Chill & Laid-back', description: 'Relaxed and easy-going', trait: 'chill' },
+                    { id: 'tropical', icon: '🌴', label: 'Tropical Dreamer', description: 'Sun, beaches, and good vibes', trait: 'tropical' },
+                    { id: 'mysterious', icon: '🌙', label: 'Mysterious', description: 'Deep, intriguing, enigmatic', trait: 'mysterious' }
+                ]
+            },
+            {
+                id: 'scent-profile',
+                title: 'What scent profile appeals to you?',
+                subtitle: 'Let\'s narrow down your perfect fragrance family',
+                options: [
+                    { id: 'fresh', icon: '🌊', label: 'Fresh & Aquatic', description: 'Clean, crisp, ocean-like', trait: 'fresh' },
+                    { id: 'fruity', icon: '🍹', label: 'Fruity & Citrus', description: 'Bright, energetic, zesty', trait: 'fruity' },
+                    { id: 'woody', icon: '🌲', label: 'Woody & Earthy', description: 'Grounded, natural, warm', trait: 'woody' },
+                    { id: 'warm', icon: '🔥', label: 'Warm & Spicy', description: 'Sensual, cozy, inviting', trait: 'warm' }
+                ]
+            },
+            {
+                id: 'occasion',
+                title: 'When do you wear fragrance?',
+                subtitle: 'Choose your main use case',
+                options: [
+                    { id: 'daytime', icon: '☀️', label: 'Daytime Adventures', description: 'For work and everyday', trait: 'daytime' },
+                    { id: 'casual', icon: '👕', label: 'Casual & Social', description: 'Hanging with friends', trait: 'casual' },
+                    { id: 'evening', icon: '🌃', label: 'Evening & Special', description: 'Nights out, special events', trait: 'evening' },
+                    { id: 'always', icon: '⏰', label: 'All-Day Wear', description: 'Something I wear always', trait: 'all-day' }
+                ]
+            },
+            {
+                id: 'intensity',
+                title: 'How intense should it be?',
+                subtitle: 'Pick your fragrance strength',
+                options: [
+                    { id: 'light', icon: '🍃', label: 'Light & Subtle', description: 'Gentle, barely noticeable', trait: 'light' },
+                    { id: 'moderate', icon: '💨', label: 'Moderate', description: 'Present but not overpowering', trait: 'moderate' },
+                    { id: 'strong', icon: '💪', label: 'Bold & Strong', description: 'Make a statement', trait: 'strong' },
+                    { id: 'extreme', icon: '⚡', label: 'Unforgettable', description: 'Impossible to ignore', trait: 'extreme' }
+                ]
+            },
+            {
+                id: 'season',
+                title: 'Which season matches you?',
+                subtitle: 'When do you feel most like yourself?',
+                options: [
+                    { id: 'spring', icon: '🌸', label: 'Spring', description: 'Fresh starts and new beginnings', trait: 'spring' },
+                    { id: 'summer', icon: '☀️', label: 'Summer', description: 'Hot, vibrant, alive', trait: 'summer' },
+                    { id: 'autumn', icon: '🍂', label: 'Autumn', description: 'Warm, cozy, reflective', trait: 'autumn' },
+                    { id: 'winter', icon: '❄️', label: 'Winter', description: 'Deep, cool, sophisticated', trait: 'winter' }
+                ]
+            },
+            {
+                id: 'mood',
+                title: 'Your current mood?',
+                subtitle: 'How are you feeling today?',
+                options: [
+                    { id: 'energetic', icon: '✨', label: 'Energetic', description: 'Ready to conquer the world', trait: 'energetic' },
+                    { id: 'confident', icon: '💎', label: 'Confident', description: 'Feeling myself', trait: 'confident' },
+                    { id: 'romantic', icon: '💕', label: 'Romantic', description: 'Soft and sensual', trait: 'romantic' },
+                    { id: 'creative', icon: '🎨', label: 'Creative', description: 'Inspired and imaginative', trait: 'creative' }
+                ]
+            }
+        ];
+
+        const fragrances = [
+            {
+                id: 'islander',
+                name: 'Islander',
+                image: 'images/islander.jpg',
+                status: 'available',
+                description: 'Tropical escape in a bottle. Sun-soaked citrus, warm mango, and creamy coconut.',
+                traits: ['tropical', 'fruity', 'casual', 'all-day', 'summer', 'energetic'],
+                type: 'Tropical • Fresh • Exotic'
+            },
+            {
+                id: 'explorer',
+                name: 'Explorer',
+                image: 'images/explorer.jpg',
+                status: 'coming-soon',
+                description: 'Adventure awaits. Earthy, bold notes for the fearless.',
+                traits: ['adventurous', 'woody', 'daytime', 'strong', 'autumn', 'confident'],
+                type: 'Woody • Earthy • Bold'
+            },
+            {
+                id: 'mariner',
+                name: 'Mariner',
+                image: 'images/mariner.jpg',
+                status: 'coming-soon',
+                description: 'Ocean-inspired freshness and maritime grace. Clean and crisp.',
+                traits: ['chill', 'fresh', 'daytime', 'moderate', 'spring', 'creative'],
+                type: 'Fresh • Aquatic • Marine'
+            },
+            {
+                id: 'eclipse',
+                name: 'Eclipse',
+                image: 'images/eclipse.jpg',
+                status: 'coming-soon',
+                description: 'Mysterious depths and dark elegance. Sensual and intriguing.',
+                traits: ['mysterious', 'warm', 'evening', 'strong', 'winter', 'romantic'],
+                type: 'Warm • Spicy • Mysterious'
+            }
+        ];
+
+        let currentQuestion = 0;
+        let userAnswers = {};
+
+        function displayQuestion() {
+            try {
+                if (currentQuestion >= questions.length) {
+                    showResults();
+                    return;
+                }
+
+                const question = questions[currentQuestion];
+                const container = document.getElementById('question-container');
+                const progress = document.getElementById('progress');
+                const nextBtn = document.getElementById('next-btn');
+                const backBtn = document.getElementById('back-btn');
+
+                if (!container || !progress || !nextBtn || !backBtn) {
+                    console.error('Missing DOM elements');
+                    return;
+                }
+
+                progress.style.width = ((currentQuestion + 1) / questions.length * 100) + '%';
+
+                let html = '<div class="question-number">Question ' + (currentQuestion + 1) + ' of ' + questions.length + '</div>';
+                html += '<h2 class="question-title">' + question.title + '</h2>';
+                html += '<p class="question-subtitle">' + question.subtitle + '</p>';
+                html += '<div class="options-grid">';
+
+                for (let i = 0; i < question.options.length; i++) {
+                    const option = question.options[i];
+                    const selected = userAnswers[question.id] === option.id ? 'selected' : '';
+                    html += '<button type="button" class="option-btn ' + selected + '" onclick="selectOption(\'' + question.id + '\', \'' + option.id + '\', this)">';
+                    html += '<div class="option-icon">' + option.icon + '</div>';
+                    html += '<div class="option-content">';
+                    html += '<span class="option-label">' + option.label + '</span>';
+                    html += '<span class="option-description">' + option.description + '</span>';
+                    html += '</div>';
+                    html += '</button>';
+                }
+
+                html += '</div>';
+                container.innerHTML = html;
+
+                nextBtn.disabled = !userAnswers[question.id];
+                backBtn.style.display = currentQuestion === 0 ? 'none' : 'block';
+
+                if (currentQuestion === questions.length - 1) {
+                    nextBtn.textContent = 'See My Match →';
+                } else {
+                    nextBtn.textContent = 'Next →';
+                }
+            } catch (e) {
+                console.error('Error in displayQuestion:', e);
+            }
+        }
+
+        function selectOption(questionId, optionId, element) {
+            userAnswers[questionId] = optionId;
+            document.querySelectorAll('.option-btn').forEach(btn => btn.classList.remove('selected'));
+            element.classList.add('selected');
+            document.getElementById('next-btn').disabled = false;
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                displayQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                displayQuestion();
+            }
+        }
+
+        function showResults() {
+            const scores = {};
+            fragrances.forEach(f => {
+                scores[f.id] = 0;
+            });
+
+            Object.values(userAnswers).forEach(answer => {
+                let matchingQuestion = null;
+                let matchingOption = null;
+
+                for (let q of questions) {
+                    const opt = q.options.find(o => o.id === answer);
+                    if (opt) {
+                        matchingQuestion = q;
+                        matchingOption = opt;
+                        break;
+                    }
+                }
+
+                if (matchingOption) {
+                    fragrances.forEach(fragrance => {
+                        if (fragrance.traits.includes(matchingOption.trait)) {
+                            scores[fragrance.id]++;
+                        }
+                    });
+                }
+            });
+
+            const ranked = [...fragrances].sort((a, b) => scores[b.id] - scores[a.id]);
+
+            let html = `
+                <div class="results-header">
+                    <h2>🎯 Your Perfect Match</h2>
+                    <p>Based on your answers, here's what we recommend for you</p>
+                </div>
+                <div class="results-grid">
+            `;
+
+            ranked.forEach((fragrance, index) => {
+                const matchPercent = Math.round((scores[fragrance.id] / questions.length) * 100);
+                const statusLabel = fragrance.status === 'available' ? 'Available Now' : 'Coming Soon';
+
+                html += `
+                    <div class="result-card">
+                        <img src="${fragrance.image}" alt="${fragrance.name}" class="result-image">
+                        <div class="result-content">
+                            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px;">
+                                <div>
+                                    <div class="result-name">${fragrance.name}</div>
+                                    <div class="result-match">${index === 0 ? '⭐ Best Match' : (index === 1 ? '✨ Great Choice' : '💫 Also Consider')}</div>
+                                </div>
+                                <div class="match-percentage">${matchPercent}%</div>
+                            </div>
+                            <div class="result-badge">${statusLabel}</div>
+                            <p class="result-description">${fragrance.description}</p>
+                            <button class="btn-view" onclick="goToProduct('${fragrance.id}')">Explore ${fragrance.name}</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `
+                </div>
+                <button class="restart-btn" onclick="restartQuiz()">← Take Quiz Again</button>
+            `;
+
+            const resultsSection = document.getElementById('results-section');
+            resultsSection.innerHTML = html;
+
+            document.getElementById('quiz-form').style.display = 'none';
+            resultsSection.style.display = 'block';
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            userAnswers = {};
+            document.getElementById('quiz-form').style.display = 'block';
+            document.getElementById('results-section').style.display = 'none';
+            displayQuestion();
+        }
+
+        function goToProduct(productId) {
+            window.location.href = `products.html?product=${productId}`;
+        }
+
+        // Initialize quiz immediately with fallback
+        function initializeQuiz() {
+            const container = document.getElementById('question-container');
+            if (container) {
+                displayQuestion();
+            } else {
+                console.error('Question container not found');
+                setTimeout(initializeQuiz, 100);
+            }
+        }
+
+        if (document.readyState === 'complete' || document.readyState === 'interactive') {
+            initializeQuiz();
+        } else {
+            document.addEventListener('DOMContentLoaded', initializeQuiz);
+            window.addEventListener('load', initializeQuiz);
+        }
+
+        // Also initialize after a short delay to be safe
+        setTimeout(initializeQuiz, 500);
+    </script>
+</body>
+</html>

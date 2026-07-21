@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Fragrances | Low Tide Fragrances</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .fragrance-card {
+            background: white;
+            border: 2px solid #e0dbd5;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            animation: fadeInUp 0.6s ease-out forwards;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fragrance-card:hover {
+            border-color: #0087be;
+            box-shadow: 0 20px 60px rgba(0, 135, 190, 0.15);
+            transform: translateY(-8px);
+        }
+
+        .fragrance-image-container {
+            position: relative;
+            overflow: hidden;
+            height: 320px;
+            background: linear-gradient(135deg, #faf7f2 0%, #f5f1ed 100%);
+        }
+
+        .fragrance-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .fragrance-card:hover .fragrance-image {
+            transform: scale(1.08);
+        }
+
+        .fragrance-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            backdrop-filter: blur(10px);
+        }
+
+        .badge-available {
+            background: linear-gradient(135deg, #0087be, #ffffff);
+            color: #001a33;
+            box-shadow: 0 0 20px rgba(0, 135, 190, 0.3);
+        }
+
+        .badge-coming {
+            background: rgba(0, 26, 51, 0.85);
+            color: #00ff88;
+            border: 1px solid rgba(0, 255, 136, 0.3);
+        }
+
+        .fragrance-content {
+            padding: 25px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .fragrance-header {
+            margin-bottom: 15px;
+        }
+
+        .fragrance-name {
+            font-size: 1.8rem;
+            color: #000000;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-family: 'Georgia', serif;
+        }
+
+        .fragrance-type {
+            color: #0087be;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .fragrance-description {
+            color: #666;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .fragrance-notes-pyramid {
+            background: linear-gradient(135deg, #f9f7f5 0%, #f5f1ed 100%);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #e0dbd5;
+        }
+
+        .pyramid {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .pyramid-level {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .pyramid-label {
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: #000000;
+            min-width: 60px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .pyramid-bar {
+            flex: 1;
+            height: 28px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 600;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .pyramid-top {
+            background: linear-gradient(135deg, #ff9500, #ffb84d);
+            width: 60%;
+        }
+
+        .pyramid-middle {
+            background: linear-gradient(135deg, #0087be, #00b4e6);
+            width: 85%;
+        }
+
+        .pyramid-base {
+            background: linear-gradient(135deg, #8b4513, #a0522d);
+            width: 100%;
+        }
+
+        .fragrance-metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .metric {
+            background: #f9f7f5;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #e0dbd5;
+        }
+
+        .metric-label {
+            font-size: 0.75rem;
+            color: #666;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .metric-value {
+            font-size: 1.2rem;
+            color: #000000;
+            font-weight: 600;
+        }
+
+        .intensity-bar {
+            width: 100%;
+            height: 4px;
+            background: #e0dbd5;
+            border-radius: 2px;
+            margin-top: 6px;
+            overflow: hidden;
+        }
+
+        .intensity-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #0087be, #00d9ff);
+            border-radius: 2px;
+        }
+
+        .fragrance-price {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #0087be;
+            margin: 15px 0;
+            font-family: 'Georgia', serif;
+        }
+
+        .fragrance-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: auto;
+        }
+
+        .btn-primary-full {
+            flex: 1;
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #0087be, #ffffff);
+            border: none;
+            border-radius: 8px;
+            color: #001a33;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(0, 135, 190, 0.3);
+        }
+
+        .btn-primary-full:hover {
+            box-shadow: 0 0 40px rgba(0, 135, 190, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary-full {
+            flex: 1;
+            padding: 12px 20px;
+            border: 2px solid #e0dbd5;
+            background: white;
+            border-radius: 8px;
+            color: #000000;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary-full:hover {
+            border-color: #0087be;
+            background: #f0f7ff;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            padding: 20px 0;
+        }
+
+        .fragrance-card:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .fragrance-card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .fragrance-card:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .fragrance-card:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        @media (max-width: 768px) {
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .fragrance-card {
+                max-width: 100%;
+            }
+
+            .fragrance-metrics {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-content">
+                <div class="logo">
+                    <a href="index.html">
+                        <img src="images/logo.png" alt="Low Tide Fragrances Logo" class="logo-image" />
+                    </a>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="products.html" class="active">Fragrances</a></li>
+                    <li><a href="finder.html">Find Your Scent</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+                <button class="menu-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <section style="background: linear-gradient(135deg, #faf7f2 0%, #f5f1ed 100%); color: var(--color-text); padding: 60px 0; text-align: center; margin-bottom: 60px;">
+        <div class="container">
+            <h1 style="color: #000000; margin-bottom: 20px;">Our Fragrances</h1>
+            <p style="color: #000000; font-size: 1.1rem;">Discover bold scents for every journey</p>
+        </div>
+    </section>
+
+    <section>
+        <div class="container">
+            <div id="products-grid" class="products-grid"></div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Low Tide Fragrances</h4>
+                    <p>Bold scents inspired by the coast.</p>
+                    <div class="social-links">
+                        <a href="#">Instagram</a>
+                        <a href="#">Facebook</a>
+                        <a href="#">TikTok</a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Shop</h4>
+                    <ul>
+                        <li><a href="products.html">All Fragrances</a></li>
+                        <li><a href="finder.html">Find Your Scent</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="safety.html">Safety Info</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Low Tide Fragrances. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        const fragrances = [
+            {
+                id: 'islander',
+                name: 'Islander',
+                status: 'available',
+                price: 15.00,
+                image: 'images/islander.jpg',
+                type: 'Tropical • Fresh • Exotic',
+                description: 'Escape to paradise with sun-soaked citrus, warm mango, and creamy coconut.',
+                topNotes: 'Ginger, Grapefruit',
+                heartNotes: 'Mango, Strawberry',
+                baseNotes: 'Coconut, Sandalwood',
+                intensity: 75,
+                longevity: '6-8 hours'
+            },
+            {
+                id: 'explorer',
+                name: 'Explorer',
+                status: 'coming-soon',
+                image: 'images/explorer.jpg',
+                type: 'Earthy • Bold • Adventurous',
+                description: 'An olfactory journey through untamed wilderness. Grounding base notes with warm spice.',
+                topNotes: 'Ginger, Bergamot',
+                heartNotes: 'Cedarwood, Cardamom',
+                baseNotes: 'Vetiver, Leather',
+                intensity: 90,
+                longevity: '8-10 hours'
+            },
+            {
+                id: 'mariner',
+                name: 'Mariner',
+                status: 'coming-soon',
+                image: 'images/mariner.jpg',
+                type: 'Fresh • Aquatic • Crisp',
+                description: 'Feel the salt spray and ocean breeze. Fresh citrus with oceanic accords.',
+                topNotes: 'Lemon, Sea Salt',
+                heartNotes: 'Aquatic Notes, Grapefruit',
+                baseNotes: 'Driftwood, Musk',
+                intensity: 60,
+                longevity: '5-7 hours'
+            },
+            {
+                id: 'eclipse',
+                name: 'Eclipse',
+                status: 'coming-soon',
+                image: 'images/eclipse.jpg',
+                type: 'Dark • Mysterious • Sensual',
+                description: 'Immerse yourself in darkness. Moody coffee and chocolate notes with warm spice.',
+                topNotes: 'Cinnamon, Cardamom',
+                heartNotes: 'Coffee, Cocoa',
+                baseNotes: 'Vanilla, Sandalwood',
+                intensity: 85,
+                longevity: '8-10 hours'
+            }
+        ];
+
+        const grid = document.getElementById('products-grid');
+
+        fragrances.forEach(f => {
+            const badge = f.status === 'available'
+                ? '<span class="fragrance-badge badge-available">✨ Available Now</span>'
+                : '<span class="fragrance-badge badge-coming">Coming Soon</span>';
+
+            const price = f.status === 'available'
+                ? '<div class="fragrance-price">£' + f.price.toFixed(2) + '</div>'
+                : '';
+
+            const intensityPercent = f.intensity;
+
+            const card = document.createElement('div');
+            card.className = 'fragrance-card';
+            card.innerHTML = `
+                <div class="fragrance-image-container">
+                    <img src="${f.image}" alt="${f.name}" class="fragrance-image" />
+                    ${badge}
+                </div>
+                <div class="fragrance-content">
+                    <div class="fragrance-header">
+                        <div class="fragrance-name">${f.name}</div>
+                        <div class="fragrance-type">${f.type}</div>
+                    </div>
+
+                    <p class="fragrance-description">${f.description}</p>
+
+                    <div class="fragrance-notes-pyramid">
+                        <div class="pyramid">
+                            <div class="pyramid-level">
+                                <div class="pyramid-label">Top</div>
+                                <div class="pyramid-bar pyramid-top" title="${f.topNotes}">${f.topNotes}</div>
+                            </div>
+                            <div class="pyramid-level">
+                                <div class="pyramid-label">Heart</div>
+                                <div class="pyramid-bar pyramid-middle" title="${f.heartNotes}">${f.heartNotes}</div>
+                            </div>
+                            <div class="pyramid-level">
+                                <div class="pyramid-label">Base</div>
+                                <div class="pyramid-bar pyramid-base" title="${f.baseNotes}">${f.baseNotes}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="fragrance-metrics">
+                        <div class="metric">
+                            <div class="metric-label">Intensity</div>
+                            <div class="metric-value">${f.intensity}%</div>
+                            <div class="intensity-bar">
+                                <div class="intensity-fill" style="width: ${f.intensity}%"></div>
+                            </div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Longevity</div>
+                            <div class="metric-value" style="font-size: 0.95rem;">${f.longevity}</div>
+                        </div>
+                    </div>
+
+                    ${price}
+
+                    <div class="fragrance-actions">
+                        <button class="btn-primary-full" onclick="goToProduct('${f.id}')">
+                            ${f.status === 'available' ? 'Add to Cart' : 'Notify Me'}
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            grid.appendChild(card);
+        });
+
+        function goToProduct(productId) {
+            console.log('Product clicked:', productId);
+            // Can be expanded later with product detail page
+        }
+    </script>
+</body>
+</html>
